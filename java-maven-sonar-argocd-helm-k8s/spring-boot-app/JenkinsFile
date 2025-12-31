@@ -5,15 +5,28 @@ pipeline {
       args '--user root -v /var/run/docker.sock:/var/run/docker.sock' // mount Docker socket to access the host's Docker daemon
     }
   }
-  stages {
-stage('Checkout') {
-  steps {
-    deleteDir()          // clean workspace
-    checkout scm         // clone repo INSIDE container
-    sh 'pwd && ls -la'   // DEBUG: verify repo presence
-  }
-}
+ stages {
 
+  stage('Checkout') {
+    steps {
+      deleteDir()
+      checkout scm
+      sh 'echo "Checkout done"'
+    }
+  }
+
+  stage('Debug Workspace') {   // 👈 TEMPORARY
+    steps {
+      sh '''
+        echo "===== CURRENT DIRECTORY ====="
+        pwd
+        echo "===== LIST FILES ====="
+        ls -la
+        echo "===== FIND .git ====="
+        find . -maxdepth 4 -type d -name ".git"
+      '''
+    }
+  }
   stage('Install Docker CLI') {
       steps {
         sh '''
