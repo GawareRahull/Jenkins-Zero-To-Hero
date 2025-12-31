@@ -6,11 +6,14 @@ pipeline {
     }
   }
   stages {
-    stage('Checkout') {
-      steps {
-       checkout scm
-      }
-    }
+stage('Checkout') {
+  steps {
+    deleteDir()          // clean workspace
+    checkout scm         // clone repo INSIDE container
+    sh 'pwd && ls -la'   // DEBUG: verify repo presence
+  }
+}
+
   stage('Install Docker CLI') {
       steps {
         sh '''
