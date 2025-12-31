@@ -20,6 +20,15 @@ stage('Install Docker CLI') {
         '''
       }
     }
+stage('Debug Git Location') {
+  steps {
+    sh '''
+      pwd
+      ls -la
+      find . -name .git -type d
+    '''
+  }
+}
     stage('Build and Test') {
       steps {
         sh 'ls -ltr'
@@ -55,12 +64,14 @@ stage('Install Docker CLI') {
     }
     stage('Update Deployment File') {
         environment {
+            GIT_REPO_DIR = "java-maven-sonar-argocd-helm-k8s"
             GIT_REPO_NAME = "Jenkins-Zero-To-Hero"
             GIT_USER_NAME = "GawareRahull"
         }
         steps {
             withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                 sh '''
+                    cd ${GIT_REPO_DIR}
                     git config user.email "gawarerahul77@gmail.com"
                     git config user.name "GawareRahull"
                     BUILD_NUMBER=${BUILD_NUMBER}
