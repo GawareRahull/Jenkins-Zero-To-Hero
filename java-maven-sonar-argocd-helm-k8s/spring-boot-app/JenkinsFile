@@ -72,6 +72,7 @@ stage('Debug Git Location') {
             withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
                 sh '''
                     pwd
+                    git init
                     git config user.email "gawarerahul77@gmail.com"
                     git config user.name "GawareRahull"
                     BUILD_NUMBER=${BUILD_NUMBER}
