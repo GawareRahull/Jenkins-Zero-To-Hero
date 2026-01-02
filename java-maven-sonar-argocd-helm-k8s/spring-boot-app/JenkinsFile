@@ -73,7 +73,6 @@ stage('Debug Git Location') {
                 sh '''
                     pwd
                     ls -la .git
-                    cd java-maven-sonar-argocd-helm-k8s/spring-boot-app-manifests
                     git config user.email "gawarerahul77@gmail.com"
                     git config user.name "GawareRahull"
                     BUILD_NUMBER=${BUILD_NUMBER}
