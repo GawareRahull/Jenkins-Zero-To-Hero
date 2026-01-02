@@ -38,28 +38,29 @@ pipeline {
       }
     }
 
-    stage('Build & Push Docker Image') {
-      agent {
-        docker {
-          image 'maven:3.9.9-eclipse-temurin-17'
-          args '--user root -v /var/run/docker.sock:/var/run/docker.sock'
-        }
-      }
-      environment {
-        IMAGE = "rahulgaware/cicd:${BUILD_NUMBER}"
-      }
-      steps {
-        script {
-          sh '''
-            cd java-maven-sonar-argocd-helm-k8s/spring-boot-app
-            docker build -t $IMAGE .
-          '''
-          docker.withRegistry('https://index.docker.io/v1/', 'docker-cred') {
-            docker.image(IMAGE).push()
-          }
-        }
+   stage('Build & Push Docker Image') {
+  agent {
+    docker {
+      image 'docker:27-cli'
+      args '-v /var/run/docker.sock:/var/run/docker.sock'
+    }
+  }
+  environment {
+    IMAGE = "rahulgaware/cicd:${BUILD_NUMBER}"
+  }
+  steps {
+    script {
+      sh '''
+        cd java-maven-sonar-argocd-helm-k8s/spring-boot-app
+        docker build -t $IMAGE .
+      '''
+      docker.withRegistry('https://index.docker.io/v1/', 'docker-cred') {
+        docker.image(IMAGE).push()
       }
     }
+  }
+}
+
 
     stage('Update Deployment File') {
       agent { label 'built-in' }   // ✅ Jenkins host ONLY
